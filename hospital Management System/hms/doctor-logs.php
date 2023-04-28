@@ -1,15 +1,16 @@
 <?php
 session_start();
-error_reporting(0);
+//error_reporting(0);
 include('include/config.php');
 if(strlen($_SESSION['id']==0)) {
  header('location:logout.php');
   } else{
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Patients | Appointment History</title>
+		<title>Admin | Doctor Session Logs</title>
 		
 		<link href="http://fonts.googleapis.com/css?family=Lato:300,400,400italic,600,700|Raleway:300,400,500,600,700|Crete+Round:400italic" rel="stylesheet" type="text/css" />
 		<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
@@ -40,14 +41,14 @@ if(strlen($_SESSION['id']==0)) {
 						<section id="page-title">
 							<div class="row">
 								<div class="col-sm-8">
-									<h1 class="mainTitle">Patients  | Appointment History</h1>
+									<h1 class="mainTitle">Admin  | Doctor Session Logs</h1>
 																	</div>
 								<ol class="breadcrumb">
 									<li>
-										<span>Patients </span>
+										<span>Admin </span>
 									</li>
 									<li class="active">
-										<span>Appointment History</span>
+										<span>Doctor Session Logs</span>
 									</li>
 								</ol>
 							</div>
@@ -66,20 +67,19 @@ if(strlen($_SESSION['id']==0)) {
 										<thead>
 											<tr>
 												<th class="center">#</th>
-												<th class="hidden-xs">Doctor Name</th>
-												<th>Patient Name</th>
-												<th>Specialization</th>
-												<th>Consultancy Fee</th>
-												<th>Appointment Date / Time </th>
-												<th>Appointment Creation Date  </th>
-												<th>Current Status</th>
-												<th>Action</th>
+												<th class="hidden-xs">User id</th>
+												<th>Username</th>
+												<th>User IP</th>
+												<th>Login time</th>
+												<th>Logout Time </th>
+												<th> Status </th>
+												
 												
 											</tr>
 										</thead>
 										<tbody>
 <?php
-$sql=mysqli_query($con,"select doctors.doctorName as docname,users.fullName as pname,appointment.*  from appointment join doctors on doctors.id=appointment.doctorId join users on users.id=appointment.userId ");
+$sql=mysqli_query($con,"select * from doctorslog ");
 $cnt=1;
 while($row=mysqli_fetch_array($sql))
 {
@@ -87,68 +87,25 @@ while($row=mysqli_fetch_array($sql))
 
 											<tr>
 												<td class="center"><?php echo $cnt;?>.</td>
-												<td class="hidden-xs"><?php echo $row['docname'];?></td>
-												<td class="hidden-xs"><?php echo $row['pname'];?></td>
-												<td><?php echo $row['doctorSpecialization'];?></td>
-												<td><?php echo $row['consultancyFees'];?></td>
-												<td><?php echo $row['appointmentDate'];?> / <?php echo
-												 $row['appointmentTime'];?>
+												<td class="hidden-xs"><?php echo $row['uid'];?></td>
+												<td class="hidden-xs"><?php echo $row['username'];?></td>
+												<td><?php echo $row['userip'];?></td>
+												<td><?php echo $row['loginTime'];?></td>
+												<td><?php echo $row['logout'];?>
 												</td>
-												<td><?php echo $row['postingDate'];?></td>
+												
 												<td>
-<?php if(($row['userStatus']==1) && ($row['doctorStatus']==1))  
+<?php if($row['status']==1)
 {
-	echo "Active";
+	echo "Success";
 }
-if(($row['userStatus']==0) && ($row['doctorStatus']==1))  
+else
 {
-	echo "Cancel by Patient";
-}
+	echo "Failed";
+}?>
 
-if(($row['userStatus']==1) && ($row['doctorStatus']==0))  
-{
-	echo "Cancel by Doctor";
-}
-
-
-
-												?></td>
-												<td >
-												<div class="visible-md visible-lg hidden-sm hidden-xs">
-							<?php if(($row['userStatus']==1) && ($row['doctorStatus']==1))  
-{ 
-
-													
-echo "No Action yet";
-	 } else {
-
-		echo "Canceled";
-		} ?>
-												</div>
-												<div class="visible-xs visible-sm hidden-md hidden-lg">
-													<div class="btn-group" dropdown is-open="status.isopen">
-														<button type="button" class="btn btn-primary btn-o btn-sm dropdown-toggle" dropdown-toggle>
-															<i class="fa fa-cog"></i>&nbsp;<span class="caret"></span>
-														</button>
-														<ul class="dropdown-menu pull-right dropdown-light" role="menu">
-															<li>
-																<a href="#">
-																	Edit
-																</a>
-															</li>
-															<li>
-																<a href="#">
-																	Share
-																</a>
-															</li>
-															<li>
-																<a href="#">
-																	Remove
-																</a>
-															</li>
-														</ul>
-													</div>
-												</div></td>
+</td>
+												
 											</tr>
 											
 											<?php 
